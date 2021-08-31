@@ -1,3 +1,0 @@
-#Masterfile for flagstat summary
-out_path=/path/to/outfile
-sample_file_path=$work/samples.txt
