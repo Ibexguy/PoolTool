@@ -7,8 +7,8 @@
 helpFunction()
 {
    echo ""
-   echo "Usage: $0 -m masterfile.sh"
-   printf "masterfile.sh need exactly the following form: 
+   echo "Usage: bash $0 -m masterfile.sh"
+   printf "masterfile.sh need exactly! the following form: 
       runID=screening_run_4.21
       in_path=/path/to/bamfiles
       out_path=/path/to/outpufiles
@@ -53,14 +53,14 @@ mkdir -p $out_path/summary
             cat header_file_flagstat.txt > $out_path/summary/$runID.flagSumStats.txt
             while read Name; do
             echo "Reformatting header for $Name"
-            cat $out_path/flagstats/$Name.flagstat_screening.txt | awk '{printf ($1",")}' | awk '{print ($0)}' >> $out_path/summary/$runID.flagSumStats.txt
+            cat $out_path/flagstats/$Name.flagstat_screening.txt | awk '{printf ($1"\t")}' | awk '{print ($0)}' >> $out_path/summary/$runID.flagSumStats.txt
             done < ${sample_file_path}
 
 #Calculate depth 
 #Calcualte depth and coverage (include quality checks --min-MQ 30 --min-BQ 30)
       #Produce header file
       header_file=$(ls $in_path | grep $base_name.bam | head -n 1)
-      samtools coverage --reference $REFGENOME -r $Chrom $in_path/${Name}${base_name}.bam ${in_path}/${header_file} | grep '#' |  awk '{print "Name",$0}' OFS="\t" > $out_path/summary/$runID.samtoolsCov_Chrom$chrom.txt
+      samtools coverage --reference $REFGENOME -r $Chrom $in_path/${Name}${base_name}.bam | grep '#' |  awk '{print "Name",$0}' OFS="\t" > $out_path/summary/$runID.samtoolsCov_Chrom$chrom.txt
 
       #Calculate depth      
       while read Name; do
@@ -69,10 +69,10 @@ mkdir -p $out_path/summary
       done < ${sample_file_path}
 
 #Summ up reads with certain lenght (sort -n (numeric) -k 2 (column 2))
+      echo -e "Sample\tN_reads" > $out_path/summary/readSumStats_MQ$MappingQuality.txt
       while read Name; do
-      echo "Summ Reads with MQ $MappingQuality of  $Name"
             Num_passed_reads=$(samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | wc -l)
-            echo -e "$Name,$Num_passed_reads"
+            echo -e "$Name\t$Num_passed_reads"
       done < ${sample_file_path} >>  $out_path/summary/readSumStats_MQ$MappingQuality.txt
 
       #Read length distribution
@@ -82,4 +82,4 @@ mkdir -p $out_path/summary
       done < ${sample_file_path}
 
 #Run R skirpt to generate pooling sheme 
-Rscript -vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality
+Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final

@@ -1,1 +1,1 @@
-Sample_name Total_Reads[QC-passed+failed] Secondary Supplementary Duplicates Mapped_Reads Paired_in_sequencing Read1 Read2 Properly_paired with_itself_and_mate_mapped singletons mate_mapped2different_chr mate_mapped2different_chr[mapQ>=5]
+Sample_name Total_Reads[QC-passed+failed]   Secondary   Supplementary   Duplicates  Mapped_Reads    Paired_in_sequencing    Read1   Read2   Properly_paired with_itself_and_mate_mapped singletons  mate_mapped2different_chr   mate_mapped2different_chr[mapQ>=5]
