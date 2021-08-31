@@ -8,15 +8,15 @@ helpFunction()
 {
    echo ""
    echo "Usage: $0 -m masterfile.sh"
-   echo -e "\t-s Masterfile "
-   printf "runID=screening_run_4.21\n 
-      in_path=/path/to/bamfiles \n
-      out_path=/path/to/outpufiles \n
-      sample_file_path=path/to/samples.txt #textfile with one sample name per line \n
-      base_name=_dedup \n
-      MappingQuality=30 \n
-      Chrom=23\n
-      REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna\n
+   printf "masterfile.sh need exactly the following form: 
+      runID=screening_run_4.21
+      in_path=/path/to/bamfiles
+      out_path=/path/to/outpufiles
+      sample_file_path=path/to/samples.txt #textfile with one sample name per line
+      base_name=_dedup
+      MappingQuality=30
+      Chrom=23
+      REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna
 "
    exit 1 # Exit script after printing help
 }
