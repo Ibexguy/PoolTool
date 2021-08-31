@@ -3,9 +3,9 @@
 #Generate flagstat summaries and calculate pooling
 #####################################################################
 #Read in paths from master file 
-$1=master_file 
+master_fil=$1
 source $master_file
-
+mkdir -p $out_path/flagstats
 
 #Flagstats
             while read Name; do
@@ -15,7 +15,7 @@ source $master_file
             done < ${sample_file_path}
 
       #Reformatting flagstat-files
-            cat /ibex_genomics/skripts/header_file_flagstat.txt > $out_path/$runID.flagSumStats.txt
+            cat header_file_flagstat.txt > $out_path/$runID.flagSumStats.txt
             while read Name; do
             cat $out_path/flagstats/$Name.flagstat_screening.txt | awk '{printf ($1",")}' | awk '{print ($0)}' >> $out_path/$runID.flagSumStats.txt
             done < ${sample_file_path}
