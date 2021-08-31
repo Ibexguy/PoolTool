@@ -43,14 +43,14 @@ mkdir -p $out_path/summary
 
 #Run Anylsis
 #Flagstats
-            while read Name; do
-            echo "Producing Flagstats for $Name"
-            echo "$Name" > $out_path/flagstats/$Name.flagstat_screening.txt
-            samtools flagstat $in_path/${Name}${base_name}.bam >> $out_path/flagstats/$Name.flagstat_screening.txt
-            done < ${sample_file_path}
+            #while read Name; do
+            #echo "Producing Flagstats for $Name"
+            #echo "$Name" > $out_path/flagstats/$Name.flagstat_screening.txt
+            #samtools flagstat $in_path/${Name}${base_name}.bam >> $out_path/flagstats/$Name.flagstat_screening.txt
+            #done < ${sample_file_path}
 
       #Reformatting flagstat-files
-            cat header_file_flagstat.txt > $out_path/summary/$runID.flagSumStats.txt
+            echo -e "Sample_name\tTotal_Reads[QC-passed+failed]\tSecondary\tSupplementary\tDuplicates\tMapped_Reads\tPaired_in_sequencing\tRead1\tRead2\tProperly_paired\twith_itself_and_mate_mapped\tsingletons\tmate_mapped2different_chr\tmate_mapped2different_chr[mapQ>=5]" > $out_path/summary/$runID.flagSumStats.txt
             while read Name; do
             echo "Reformatting header for $Name"
             cat $out_path/flagstats/$Name.flagstat_screening.txt | awk '{printf ($1"\t")}' | awk '{print ($0)}' >> $out_path/summary/$runID.flagSumStats.txt
@@ -76,10 +76,10 @@ mkdir -p $out_path/summary
       done < ${sample_file_path} >>  $out_path/summary/readSumStats_MQ$MappingQuality.txt
 
       #Read length distribution
-      while read Name; do
-            echo "Calculate readlenght distribtuion of $Name"
-            samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | perl -ne 'chomp;print length($_) . "\n"' | sort | uniq -c | sort -n -k 2 >>  $out_path/flagstats/$Name.readLenghtCountMQ$MappingQuality.txt
-      done < ${sample_file_path}
+      #while read Name; do
+      #      echo "Calculate readlenght distribtuion of $Name"
+      #      samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | perl -ne 'chomp;print length($_) . "\n"' | sort | uniq -c | sort -n -k 2 >>  $out_path/flagstats/$Name.readLenghtCountMQ$MappingQuality.txt
+      #done < ${sample_file_path}
 
 #Run R skirpt to generate pooling sheme 
-Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final
+#Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final
