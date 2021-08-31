@@ -3,8 +3,8 @@
 #Generate flagstat summaries and calculate pooling
 #####################################################################
 #Read in paths from master file 
-master_fil=$1
-source $master_file
+
+source $1
 mkdir -p $out_path/flagstats
 
 #Flagstats
