@@ -6,3 +6,6 @@ out_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_ru
 sample_file_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt
 base_name=_dedup
 MappingQuality=30
+Chrom=23
+REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna
+
