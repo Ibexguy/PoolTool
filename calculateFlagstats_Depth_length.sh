@@ -2,11 +2,46 @@
 ######################################################################
 #Generate flagstat summaries and calculate pooling
 #####################################################################
-#Read in paths from master file 
 
-source $1
+#Initialise function
+helpFunction()
+{
+   echo ""
+   echo "Usage: $0 -m masterfile.sh"
+   echo -e "\t-s Masterfile "
+   printf "runID=screening_run_4.21\n 
+      in_path=/path/to/bamfiles \n
+      out_path=/path/to/outpufiles \n
+      sample_file_path=path/to/samples.txt #textfile with one sample name per line \n
+      base_name=_dedup \n
+      MappingQuality=30 \n
+      Chrom=23\n
+      REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna\n
+"
+   exit 1 # Exit script after printing help
+}
+
+while getopts "m:" opt
+do
+   case "$opt" in
+      m ) masterfile="$OPTARG" ;;
+      ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+   esac
+done
+
+# Print helpFunction in case parameters are empty
+if [ -z "$masterfile" ]
+then
+   echo "Some or all of the parameters are empty";
+   helpFunction
+fi
+
+#Load masterfile  and make folders
+source $masterfile
 mkdir -p $out_path/flagstats
+mkdir -p $out_path/summary
 
+#Run Anylsis
 #Flagstats
             while read Name; do
             echo "Producing Flagstats for $Name"
@@ -15,19 +50,36 @@ mkdir -p $out_path/flagstats
             done < ${sample_file_path}
 
       #Reformatting flagstat-files
-            cat header_file_flagstat.txt > $out_path/$runID.flagSumStats.txt
+            cat header_file_flagstat.txt > $out_path/summary/$runID.flagSumStats.txt
             while read Name; do
-            cat $out_path/flagstats/$Name.flagstat_screening.txt | awk '{printf ($1",")}' | awk '{print ($0)}' >> $out_path/$runID.flagSumStats.txt
+            echo "Reformatting header for $Name"
+            cat $out_path/flagstats/$Name.flagstat_screening.txt | awk '{printf ($1",")}' | awk '{print ($0)}' >> $out_path/summary/$runID.flagSumStats.txt
             done < ${sample_file_path}
 
+#Calculate depth 
+#Calcualte depth and coverage (include quality checks --min-MQ 30 --min-BQ 30)
+      #Produce header file
+      header_file=$(ls $in_path | grep $base_name.bam | head -n 1)
+      samtools coverage --reference $REFGENOME -r $Chrom $in_path/${Name}${base_name}.bam ${in_path}/${header_file} | grep '#' |  awk '{print "Name",$0}' OFS="\t" > $out_path/summary/$runID.samtoolsCov_Chrom$chrom.txt
+
+      #Calculate depth      
+      while read Name; do
+            echo "Calculate coverage with MQ $MappingQuality for $Name"
+            samtools coverage --reference $REFGENOME --min-MQ $MappingQuality --min-BQ 30 -r $Chrom $in_path/${Name}${base_name}.bam | grep -v '^#' |  awk '{print variable,$0}' variable="$Name" OFS="\t" >> $out_path/summary/$runID.samtoolsCov_Chrom$chrom.txt
+      done < ${sample_file_path}
 
 #Summ up reads with certain lenght (sort -n (numeric) -k 2 (column 2))
       while read Name; do
-      Num_passed_reads=`samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | wc -l`
-      echo -e "$Name,$Num_passed_reads"
-      done < ${sample_file_path} >>  $out_path/flagstats/readSumStats_MQ$MappingQuality.txt
+      echo "Summ Reads with MQ $MappingQuality of  $Name"
+            Num_passed_reads=$(samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | wc -l)
+            echo -e "$Name,$Num_passed_reads"
+      done < ${sample_file_path} >>  $out_path/summary/readSumStats_MQ$MappingQuality.txt
 
       #Read length distribution
       while read Name; do
-      samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | perl -ne 'chomp;print length($_) . "\n"' | sort | uniq -c | sort -n -k 2 >>  $out_path/$Name.readLenghtCountMQ$MappingQuality.txt
+            echo "Calculate readlenght distribtuion of $Name"
+            samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | perl -ne 'chomp;print length($_) . "\n"' | sort | uniq -c | sort -n -k 2 >>  $out_path/flagstats/$Name.readLenghtCountMQ$MappingQuality.txt
       done < ${sample_file_path}
+
+#Run R skirpt to generate pooling sheme 
+Rscript -vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality
