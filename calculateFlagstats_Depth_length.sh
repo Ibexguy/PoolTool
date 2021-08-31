@@ -60,12 +60,12 @@ mkdir -p $out_path/summary
 #Calcualte depth and coverage (include quality checks --min-MQ 30 --min-BQ 30)
       #Produce header file
       header_file=$(ls $in_path | grep $base_name.bam | head -n 1)
-      samtools coverage --reference $REFGENOME -r $Chrom $in_path/${Name}${base_name}.bam | grep '#' |  awk '{print "Name",$0}' OFS="\t" > $out_path/summary/$runID.samtoolsCov_Chrom$chrom.txt
+      samtools coverage --reference $REFGENOME -r $Chrom $in_path/$header_file| grep '#' |  awk '{print "Name",$0}' OFS="\t" > $out_path/summary/$runID.samtoolsCov_Chrom$Chrom.txt
 
       #Calculate depth      
       while read Name; do
             echo "Calculate coverage with MQ $MappingQuality for $Name"
-            samtools coverage --reference $REFGENOME --min-MQ $MappingQuality --min-BQ 30 -r $Chrom $in_path/${Name}${base_name}.bam | grep -v '^#' |  awk '{print variable,$0}' variable="$Name" OFS="\t" >> $out_path/summary/$runID.samtoolsCov_Chrom$chrom.txt
+            samtools coverage --reference $REFGENOME --min-MQ $MappingQuality --min-BQ 30 -r $Chrom $in_path/${Name}${base_name}.bam | grep -v '^#' |  awk '{print variable,$0}' variable="$Name" OFS="\t" >> $out_path/summary/$runID.samtoolsCov_Chrom$Chrom.txt
       done < ${sample_file_path}
 
 #Summ up reads with certain lenght (sort -n (numeric) -k 2 (column 2))
