@@ -10,7 +10,7 @@ MappingQuality <- args[4]
 number_lanes<-args[5]
 ul_library_to_pool<-args[6]
 coverage_final<-args[7]
-MaxOutputReads_Sequencer<-args[8]
+MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 #for testing and debuging
     #runID<-"screening_run_4.21"
@@ -51,7 +51,7 @@ jointData<-regex_left_join(a,in_file[[3]],by=c("Sample"="Name"))
 #number of lines per sample
 N_reads<-paste("Mapped_Reads_MQ",MappingQuality,sep="")
 HighQualityReads<-0.923 #Reads with Quality > 30
-MaxOutputReads_Sequencer<-MaxOutputReads_Sequencer*10^6
+factor<-10^6
 
 jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
                                         mutate("EndogDNA_MQ30[%]"=((N_reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
@@ -59,7 +59,7 @@ jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Tot
                                         mutate("Coverage_aim"=coverage_final) %>%
                                         mutate("Coverage_per_Line"=coverage_final/number_lanes)%>%
                                         mutate("Rawreads_for_CoverageAim"=Coverage_per_Line*Read_for_1Cov) %>%
-                                        mutate("Sequencer_Total_Reads"=MaxOutputReads_Sequencer*HighQualityReads) %>%
+                                        mutate("Sequencer_Total_Reads"=MaxOutputReads_Sequencer*HighQualityReads*factor) %>%
                                         mutate("Sequencing_Overhead"=(MaxOutputReads_Sequencer/sum(Rawreads_for_CoverageAim))) %>%
                                         mutate("Additional_Lines_needed"=number_lanes-(number_lanes/Sequencing_Overhead))%>%
                                         mutate("Amount_of_Lane_used"=(Rawreads_for_CoverageAim/sum(Rawreads_for_CoverageAim))) %>%
