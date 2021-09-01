@@ -43,11 +43,11 @@ mkdir -p $out_path/summary
 
 #Run Anylsis
 #Flagstats
-            #while read Name; do
-            #echo "Producing Flagstats for $Name"
-            #echo "$Name" > $out_path/flagstats/$Name.flagstat_screening.txt
-            #samtools flagstat $in_path/${Name}${base_name}.bam >> $out_path/flagstats/$Name.flagstat_screening.txt
-            #done < ${sample_file_path}
+            while read Name; do
+            echo "Producing Flagstats for $Name"
+            echo "$Name" > $out_path/flagstats/$Name.flagstat_screening.txt
+            samtools flagstat $in_path/${Name}${base_name}.bam >> $out_path/flagstats/$Name.flagstat_screening.txt
+            done < ${sample_file_path}
 
       #Reformatting flagstat-files
             echo -e "Sample_name\tTotal_Reads[QC-passed+failed]\tSecondary\tSupplementary\tDuplicates\tMapped_Reads\tPaired_in_sequencing\tRead1\tRead2\tProperly_paired\twith_itself_and_mate_mapped\tsingletons\tmate_mapped2different_chr\tmate_mapped2different_chr[mapQ>=5]" > $out_path/summary/$runID.flagSumStats.txt
