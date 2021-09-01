@@ -82,11 +82,11 @@ Line_optimisation<- jointData %>% select("Sample_name",
                         "Additional_Lines_needed")
                                         #mutate("RawReadNr_deviation_linemean[%]"=(-1*(((median(Total_Reads)-Total_Reads)/median(Total_Reads))*100))) %>%
                                         
-path_out<-paste(outPath,"Pooling_Scheme.xlx", sep="/")
-write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
+path_out<-paste(outPath,"Pooling_Scheme.csv", sep="/")
+write_csv(Pooling_Scheme,path_out)
 
-path_out<-paste(outPath,"Line_optimisation.xlx", sep="/")
-write.xlsx(Line_optimisation,path_out,overwrite=TRUE)
+path_out<-paste(outPath,"Line_optimisation.csv", sep="/")
+write_csv(Line_optimisation,path_out)
 
-path_out<-paste(outPath,"flagstatSummary.xlx", sep="/")
-write.xlsx(jointData, path_out,overwrite=TRUE)
+path_out<-paste(outPath,"flagstatSummary.csv", sep="/")
+write_csv(jointData, path_out)
