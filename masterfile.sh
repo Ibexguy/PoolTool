@@ -9,7 +9,7 @@
     MappingQuality=30
     Chrom=1
     REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna
-    MaxOutputReads_Sequencer=3360.99 #In millions
+    MaxOutputReads_Sequencer=3361 #In millions
 #Variables for pooling scheme
     #Number of lines which are use in the sequencing run
     number_lanes=2
