@@ -27,7 +27,6 @@ MaxOutputReads_Sequencer<-args[8]
 #Generate output Table
     require(fuzzyjoin)
     library(tidyverse)
-    library("xlsx")
     library(plyr)
     library(dplyr)
     library(tidyr)
