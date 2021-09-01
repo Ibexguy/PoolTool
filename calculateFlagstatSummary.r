@@ -30,7 +30,8 @@ MaxOutputReads_Sequencer<-as.numeric(args[8])
     library(plyr)
     library(dplyr)
     library(tidyr)
-    library(data.table)
+    library(openxlsx)
+
 
 #Setting folders and paths 
     subFolder <- "summary"
@@ -82,10 +83,10 @@ Line_optimisation<- jointData %>% select("Sample_name",
                                         #mutate("RawReadNr_deviation_linemean[%]"=(-1*(((median(Total_Reads)-Total_Reads)/median(Total_Reads))*100))) %>%
                                         
 path_out<-paste(outPath,"Pooling_Scheme.xlx", sep="/")
-write(Pooling_Scheme, path=path_out)
+write.xlsx(Pooling_Scheme, path=path_out)
 
 path_out<-paste(outPath,"Line_optimisation.xlx", sep="/")
-write(Line_optimisation, path=path_out)
+write.xlsx(Line_optimisation, path=path_out)
 
 path_out<-paste(outPath,"flagstatSummary.xlx", sep="/")
-write(jointData, path=path_out)
+write.xlsx(jointData, path=path_out)
