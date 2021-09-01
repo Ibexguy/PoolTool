@@ -49,12 +49,11 @@ jointData<-regex_left_join(a,in_file[[3]],by=c("Sample"="Name"))
 
 #Calculate mean of depth and ajust vollume for new pool 
 #number of lines per sample
-N_reads<-paste("Mapped_Reads_MQ",MappingQuality,sep="")
 HighQualityReads<-0.923 #Reads with Quality > 30
 factor<-10^6
 
 jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
-                                        mutate("EndogDNA_MQ30[%]"=((N_reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
+                                        mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>% 
                                         mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>% 
                                         mutate("Coverage_aim"=coverage_final) %>%
                                         mutate("Coverage_per_Line"=coverage_final/number_lanes)%>%
