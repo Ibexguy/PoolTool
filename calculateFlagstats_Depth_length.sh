@@ -69,12 +69,14 @@ mkdir -p $out_path/summary
       done < ${sample_file_path}
 
 #Summ up reads with certain lenght (sort -n (numeric) -k 2 (column 2))
-      echo -e "Sample\tN_reads" > $out_path/summary/readSumStats_MQ$MappingQuality.txt
+      echo "summ up reads with mapping quality MQ $MappingQuality"
+
+      echo -e "Sample\tMapped_Reads_MQ$MappingQuality" > $out_path/summary/readSumStats_MQ$MappingQuality.txt
       while read Name; do
             Num_passed_reads=$(samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | wc -l)
             echo -e "$Name\t$Num_passed_reads"
       done < ${sample_file_path} >>  $out_path/summary/readSumStats_MQ$MappingQuality.txt
-
+      
       #Read length distribution
       #while read Name; do
       #      echo "Calculate readlenght distribtuion of $Name"
@@ -82,4 +84,3 @@ mkdir -p $out_path/summary
       #done < ${sample_file_path}
 
 #Run R skirpt to generate pooling sheme 
-#Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final

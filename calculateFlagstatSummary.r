@@ -1,47 +1,93 @@
 #!/usr/bin/env Rscript
 #PCA generated with PCAngsd
 ##Script plotting point PCA and lables PCA next to each other
+
 args <- commandArgs(trailingOnly = TRUE)
-inFilePath <- args[1]  
-runID <- args[2]
-MQ <- args[3]
-outPath <- args[4]
+runID <- args[1]
+out_path <- args[2]
+sample_file_path <- args[3]
+MappingQuality <- args[4]
+number_lanes<-args[5]
+ul_library_to_pool<-args[6]
+coverage_final<-args[7]
+MaxOutputReads_Sequencer<-args[8]
 
+#for testing and debuging
+    #runID<-"screening_run_4.21"
+    #out_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics"
+    #sample_file_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt"
 
-#Plot results
-    require(ggfortify)
-    require(ggplot2)
-    require(tidyverse)
-    require(gsheet)
+    #Variables for summary statistics
+    #MappingQuality<-30
+    #number_lanes<-3
+    #ul_library_to_pool=5
+    #coverage_final=6
+#
+
+#Generate output Table
     require(fuzzyjoin)
-    require(gridExtra)
+    library(tidyverse)
+    library("xlsx")
+    library(plyr)
+    library(dplyr)
+    library(tidyr)
+    library(data.table)
 
-partentsubFolder <- "/Ibex/bam_statistics/flagstats"
-set_path<-paste(partenFolder,runID,partentsubFolder,sep="")
+#Setting folders and paths 
+    subFolder <- "summary"
+    in_path<-paste(out_path,subFolder,sep="/")
+    input_files<-list.files(in_path,include.dirs = TRUE)
+    in_file<-list()
+
+    for (i in 1:length(input_files)) {
+        x<-paste(in_path,input_files[[i]],sep="/")
+        in_file[[i]]<-read_delim(x,"\t")
+    }
+
+a<-regex_left_join(in_file[[1]],in_file[[2]],by=c("Sample"="Sample_name"))
+jointData<-regex_left_join(a,in_file[[3]],by=c("Sample"="Name"))
+#Read in files
+
+#Calculate mean of depth and ajust vollume for new pool 
+#number of lines per sample
+N_reads<-paste("Mapped_Reads_MQ",MappingQuality,sep="")
+HighQualityReads<-0.923 #Reads with Quality > 30
+MaxOutputReads_Sequencer<-MaxOutputReads_Sequencer*10^6
+
+jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
+                                        mutate("EndogDNA_MQ30[%]"=((N_reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
+                                        mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>% 
+                                        mutate("Coverage_aim"=coverage_final) %>%
+                                        mutate("Coverage_per_Line"=coverage_final/number_lanes)%>%
+                                        mutate("Rawreads_for_CoverageAim"=Coverage_per_Line*Read_for_1Cov) %>%
+                                        mutate("Sequencer_Total_Reads"=MaxOutputReads_Sequencer*HighQualityReads) %>%
+                                        mutate("Sequencing_Overhead"=(MaxOutputReads_Sequencer/sum(Rawreads_for_CoverageAim))) %>%
+                                        mutate("Additional_Lines_needed"=number_lanes-(number_lanes/Sequencing_Overhead))%>%
+                                        mutate("Amount_of_Lane_used"=(Rawreads_for_CoverageAim/sum(Rawreads_for_CoverageAim))) %>%
+                                        mutate("Library_to_pool"=sum(nrow(jointData)*ul_library_to_pool)*Amount_of_Lane_used)
 
 
-#setwd("/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_pool2_41120/Ibex/bam_statistics/flagstats")
-#setwd("/ibex_genomics/raw_da#ta/ancient_raw_data/screening_rawdata/screening_run_pool1_41120/Ibex/bam_statistics/flagstats") #Pool1
 
 
-MappingQuality=MQ
-in_file<-"flagSumStats.txt"
-in_file2<-paste("readSumStats_MQ", MappingQuality, ".txt", sep="")
+Pooling_Scheme<- jointData %>% select("Sample_name",
+                        "Library_to_pool")
 
-flagStat_summary<-as.data.frame(read.table(in_file, header=TRUE, sep=",")) %>% 
-                    select(Samples, Total_Reads, Mapped_Reads, Duplicates )
+Line_optimisation<- jointData %>% select("Sample_name",
+                        "EndogDNA[%]",
+                        "EndogDNA_MQ30[%]",
+                        "Coverage_aim",
+                        "Coverage_per_Line",
+                        "Rawreads_for_CoverageAim",
+                        "Sequencing_Overhead",
+                        "Sequencer_Total_Reads",
+                        "Additional_Lines_needed")
+                                        #mutate("RawReadNr_deviation_linemean[%]"=(-1*(((median(Total_Reads)-Total_Reads)/median(Total_Reads))*100))) %>%
+                                        
+path_out<-paste(outPath,"Pooling_Scheme.xlx", sep="/")
+write(Pooling_Scheme, path=path_out)
 
-readSumStats<-as.data.frame(read.table(in_file2, header=TRUE, sep=",")) 
+path_out<-paste(outPath,"Line_optimisation.xlx", sep="/")
+write(Line_optimisation, path=path_out)
 
-
-
-flagStat_summary<- flagStat_summary %>% mutate("Endogenous_DNA_unfilter[%]"=((Mapped_Reads/Total_Reads)*100)) %>% 
-                                        mutate("FilteredReads_surfviving"=readSumStats$Mapped_reads) %>% 
-                                        mutate("Endogenous_DNA_filter[%]"=((FilteredReads_surfviving/Total_Reads)*100)) %>% 
-                                        mutate("RawReadNr_deviation_linemean[%]"=(-1*(((median(Total_Reads)-Total_Reads)/median(Total_Reads))*100))) %>%
-                                        mutate("")
-
-path_out<-paste(outPath,"/flagstatSummary.csv", sep="")
-
-write_excel_csv(flagStat_summary, path=path_out)
-}
+path_out<-paste(outPath,"flagstatSummary.xlx", sep="/")
+write(jointData, path=path_out)
