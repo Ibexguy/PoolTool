@@ -34,7 +34,7 @@ MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 #Setting folders and paths 
     subFolder <- "summary"
-    in_path<-paste(out_path,subFolder,sep="/")
+    in_path<-paste(outPath,subFolder,sep="/")
     input_files<-list.files(in_path,include.dirs = TRUE)
     in_file<-list()
 
