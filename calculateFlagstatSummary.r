@@ -6,10 +6,10 @@ args <- commandArgs(trailingOnly = TRUE)
 runID <- args[1]
 out_path <- args[2]
 sample_file_path <- args[3]
-MappingQuality <- args[4]
-number_lanes<-args[5]
-ul_library_to_pool<-args[6]
-coverage_final<-args[7]
+MappingQuality <- as.numeric(args[4])
+number_lanes<-as.numeric(args[5])
+ul_library_to_pool<-as.numeric(args[6])
+coverage_final<-as.numeric(args[7])
 MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 #for testing and debuging
