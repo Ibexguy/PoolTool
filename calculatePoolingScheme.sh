@@ -47,4 +47,4 @@ source $masterfile
 
 Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $nlanes $ul_library_to_pool $coverage $MaxOutputReads_Sequencer
 
-cat $out_path/Line_optimisation.xlx
+cat $out_path/Line_optimisation.csv
