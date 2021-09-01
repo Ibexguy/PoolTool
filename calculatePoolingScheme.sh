@@ -26,12 +26,12 @@ helpFunction()
    exit 1 # Exit script after printing help
 }
 
-while getopts "m:l:cu" opt
+while getopts "m:lcu" opt
 do
    case "$opt" in
       m ) masterfile="$OPTARG" ;;
-      l ) nlanes="$OPTARG" ;;
-      c ) coverage="$OPTARG" ;;
+      l ) ul_library_to_pool="$OPTARG" ;;
+      c ) coverage_final="$OPTARG" ;;
       u ) ul_library_to_pool="$OPTARG" ;;
       ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
    esac
@@ -45,6 +45,6 @@ then
 fi
 source $masterfile
 
-Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $nlanes $ul_library_to_pool $coverage $MaxOutputReads_Sequencer
+Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final $MaxOutputReads_Sequencer
 
-cat $out_path/Line_optimisation.csv
+cat $out_path/Line_optimisation.csv | head -n 2 | awk -F:"," '{printf $10}'
