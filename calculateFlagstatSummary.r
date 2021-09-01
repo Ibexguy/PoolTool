@@ -4,7 +4,7 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 runID <- args[1]
-out_path <- args[2]
+outPath <- args[2]
 sample_file_path <- args[3]
 MappingQuality <- as.numeric(args[4])
 number_lanes<-as.numeric(args[5])
