@@ -61,7 +61,7 @@ jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Tot
                                         mutate("Sequencer_Total_Reads"=MaxOutputReads_Sequencer*HighQualityReads*factor) %>%
                                         mutate("Sequencing_Overhead"=(Sequencer_Total_Reads/sum(Rawreads_for_CoverageAim))) %>%
                                         mutate("Additional_Lines_needed"=number_lanes-(number_lanes/Sequencing_Overhead))%>%
-                                        mutate("Final_coverage_sample"=(number_lanes*Sequencer_Total_Reads)/sum(Read_for_1Cov)%>%
+                                        mutate("Final_coverage_sample"=(number_lanes*Sequencer_Total_Reads)/sum(Read_for_1Cov))%>%
                                         mutate("Amount_of_Lane_used"=(Rawreads_for_CoverageAim/sum(Rawreads_for_CoverageAim))) %>%
                                         mutate("Library_to_pool"=sum(nrow(jointData)*ul_library_to_pool)*Amount_of_Lane_used)
 
