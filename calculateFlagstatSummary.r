@@ -38,7 +38,6 @@ MaxOutputReads_Sequencer<-as.numeric(args[8])
     in_path<-paste(outPath,subFolder,sep="/")
     input_files<-list.files(in_path,include.dirs = TRUE)
     in_file<-list()
-
     for (i in 1:length(input_files)) {
         x<-paste(in_path,input_files[[i]],sep="/")
         in_file[[i]]<-read_delim(x,"\t")
