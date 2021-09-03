@@ -54,7 +54,8 @@ factor<-10^6
 
 jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
                                         mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>% 
-                                        mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>% 
+                                        mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>%
+                                        mutate("Total_Lines"=number_lanes) %>%
                                         mutate("Coverage_aim"=coverage_final) %>%
                                         mutate("Coverage_per_Line"=coverage_final/number_lanes)%>%
                                         mutate("Rawreads_for_CoverageAim"=Coverage_per_Line*Read_for_1Cov) %>%
@@ -74,6 +75,7 @@ Pooling_Scheme<- jointData %>% select("Sample_name",
 Line_optimisation<- jointData %>% select("Sample_name",
                         "EndogDNA[%]",
                         "EndogDNA_MQ30[%]",
+                        "Total_Lines",
                         "Coverage_aim",
                         "Coverage_per_Line",
                         "Rawreads_for_CoverageAim",
@@ -83,11 +85,11 @@ Line_optimisation<- jointData %>% select("Sample_name",
                         "Final_coverage_sample")
                                         #mutate("RawReadNr_deviation_linemean[%]"=(-1*(((median(Total_Reads)-Total_Reads)/median(Total_Reads))*100))) %>%
                                         
-path_out<-paste(outPath,"Pooling_Scheme.xlx", sep="/")
+path_out<-paste(outPath,"Pooling_Scheme.xlsx", sep="/")
 write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
 
 path_out<-paste(outPath,"Line_optimisation.csv", sep="/")
 write.csv(Line_optimisation,path_out)
 
-path_out<-paste(outPath,"flagstatSummary.xlx", sep="/")
+path_out<-paste(outPath,"flagstatSummary.xlsx", sep="/")
 write.xlsx(jointData, path_out,overwrite=TRUE)
