@@ -12,7 +12,7 @@
     MaxOutputReads_Sequencer=3361 #In millions
 #Variables for pooling scheme
     #Number of lines which are use in the sequencing run
-    number_lanes=3
+    number_lanes=2
 
     #Number of ul of library, which should be added for each sample
     ul_library_to_pool=5
