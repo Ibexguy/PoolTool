@@ -1,6 +1,6 @@
 #!/bin/bash
 ######################################################################
-#Calculate Pooing sheme calculate pooling
+#Calculate Pooing sheme
 #####################################################################
 
 #Initialise function
@@ -47,4 +47,4 @@ source $masterfile
 
 Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final $MaxOutputReads_Sequencer
 
-cat $out_path/Line_optimisation.csv | head -n 2 | awk -F:"," '{printf $10}'
+cat $out_path/Line_optimisation.csv | head -n 2 | awk -F:"," '{printf $1}'
