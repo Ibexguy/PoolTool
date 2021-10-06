@@ -4,7 +4,7 @@
     in_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/dedup
     out_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics
     sample_file_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt 
-    base_name=_dedup
+    base_name=.woNreads
 #Variables for summary statistics
     MappingQuality=30
     Chrom=1

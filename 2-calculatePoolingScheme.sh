@@ -38,7 +38,7 @@ do
 done
 
 # Print helpFunction in case parameters are empty
-if [ -z "$masterfile" || "$nlanes" ]
+if [ -z "$masterfile" ]
 then
    echo "Some or all of the parameters are empty";
    helpFunction
