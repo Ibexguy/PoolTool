@@ -26,11 +26,11 @@ MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 #Generate output Table
     require(fuzzyjoin)
-    library(tidyverse)
-    library(plyr)
-    library(dplyr)
-    library(tidyr)
-    library(openxlsx)
+    require(tidyverse)
+    require(plyr)
+    require(dplyr)
+    require(tidyr)
+    require(openxlsx)
 
 
 #Setting folders and paths 
