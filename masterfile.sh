@@ -1,14 +1,14 @@
 #!/bin/bash
 #Masterfile for flagstat summary
     runID=allSamples
-    in_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/$runID/Ibex/dedup
-    out_path=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/$runID/Ibex/bam_statistics
-    sample_file_path=/home/cluster/matrob/scratch/programs/Cluster_git/Cluster_Repo/Angsd-Pipelines/Sample_list/sample_list_extendedAllCaprines.txt
+    in_path=/net/cephfs/scratch/matrob/programs/Cluster_git/Cluster_Repo/Atlas-Pipelines/UpdateQulity/genolike
+    out_path=~/scratch/programs/Cluster_git/Pooling_DeepSequencing/$runID/bam_statistics
+    sample_file_path=/net/cephfs/scratch/matrob/programs/Cluster_git/Cluster_Repo/Atlas-Pipelines/UpdateQulity/genolike/sample_list.txt
     base_name=_recalibrated
 #Variables for summary statistics
     MappingQuality=30
     Chrom=1
-    REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna
+    REFGENOME=/home/cluster/matrob/data/programs/refgenome/Capra_hircus.ARS1.104.dna.toplevel.fa
 
 #Variables for pooling scheme
     #Number of lines which are use in the sequencing run
