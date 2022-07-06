@@ -53,7 +53,8 @@ HighQualityReads<-0.923 #Reads with Quality > 30
 factor<-10^6
 
 jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
-                                        mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>% 
+                                        mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>%
+                                        mutate("Input_Depth" = meandepth) %>% 
                                         mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>%
                                         mutate("Total_Lines"=number_lanes) %>%
                                         mutate("Coverage_aim"=coverage_final) %>%
@@ -74,6 +75,7 @@ Pooling_Scheme<- jointData %>% select("Sample_name",
 
 Line_optimisation<- jointData %>% select("Sample_name",
                         "EndogDNA[%]",
+                        "Input_Depth",
                         "EndogDNA_MQ30[%]",
                         "Total_Lines",
                         "Coverage_aim",

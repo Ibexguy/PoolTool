@@ -16,7 +16,7 @@ nano masterfile.sh #to edit the paths and parameters
 
 3. Calculate flagstats with the follwoing comand
 ```bash 
-bash calculateFlagstats_Depth_length.sh -m masterfile.sh
+bash 1-calculateFlagstats_Depth_length.sh  -m masterfile.sh
 ```
 
 4. Calculate summary statistics and pooling sheme with the follwoing skript
