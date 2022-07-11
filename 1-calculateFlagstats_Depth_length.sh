@@ -76,11 +76,5 @@ mkdir -p $out_path/summary
             Num_passed_reads=$(samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | wc -l)
             echo -e "$Name\t$Num_passed_reads"
       done < ${sample_file_path} >>  $out_path/summary/readSumStats_MQ$MappingQuality.txt
-      
-      #Read length distribution
-      #while read Name; do
-      #      echo "Calculate readlenght distribtuion of $Name"
-      #      samtools view $in_path/${Name}${base_name}.bam -q $MappingQuality | cut -f 10 | perl -ne 'chomp;print length($_) . "\n"' | sort | uniq -c | sort -n -k 2 >>  $out_path/flagstats/$Name.readLenghtCountMQ$MappingQuality.txt
-      #done < ${sample_file_path}
 
 #Run R skirpt to generate pooling sheme 

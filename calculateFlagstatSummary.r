@@ -13,15 +13,15 @@ coverage_final<-as.numeric(args[7])
 MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 #for testing and debuging
-    #runID<-"screening_run_4.21"
-    #out_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics"
-    #sample_file_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt"
-
-    #Variables for summary statistics
-    #MappingQuality<-30
-    #number_lanes<-3
-    #ul_library_to_pool=5
-    #coverage_final=6
+    runID<-"screening_run_4.21"
+    out_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics"
+    sample_file_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt"
+    jointData<-read.xlsx('/Users/mathieu/Dropbox/Mac/Documents/flagstatSummary_poolPlanning_chap3_cg.xlsx')
+    Variables for summary statistics
+    MappingQuality<-30
+    number_lanes<-2
+    ul_library_to_pool=5
+    coverage_final=6
 #
 
 #Generate output Table
@@ -54,7 +54,6 @@ factor<-10^6
 
 jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
                                         mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>%
-                                        mutate("Input_Depth" = meandepth) %>% 
                                         mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>%
                                         mutate("Total_Lines"=number_lanes) %>%
                                         mutate("Coverage_aim"=coverage_final) %>%
@@ -64,16 +63,14 @@ jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Tot
                                         mutate("Sequencing_Overhead"=(Sequencer_Total_Reads/sum(Rawreads_for_CoverageAim))) %>%
                                         mutate("Additional_Lines_needed"=number_lanes-(number_lanes*Sequencing_Overhead))%>%
                                         mutate("Final_coverage_sample"=(number_lanes*Sequencer_Total_Reads)/sum(Read_for_1Cov))%>%
-                                        mutate("Amount_of_Lane_used"=(Rawreads_for_CoverageAim/sum(Rawreads_for_CoverageAim))) %>%
-                                        mutate("Library_to_pool"=sum(nrow(jointData)*ul_library_to_pool)*Amount_of_Lane_used)
-
-
+                                        mutate("yl_Coverage_aim"=(Rawreads_for_CoverageAim)/(`Total_Reads[QC-passed+failed]`/ul_library_to_pool))%>%
+                                        mutate("Library_to_pool"= (yl_Coverage_aim /(mean(yl_Coverage_aim)*(nocl(yl_Coverage_aim)-1)*ul_library_to_pool)))
 
 
 Pooling_Scheme<- jointData %>% select("Sample_name",
                         "Library_to_pool")
 
-Line_optimisation<- jointData %>% select("Sample_name",
+Line_optimisation<-jointData %>% select("Sample_name",
                         "EndogDNA[%]",
                         "Input_Depth",
                         "EndogDNA_MQ30[%]",
@@ -85,7 +82,6 @@ Line_optimisation<- jointData %>% select("Sample_name",
                         "Sequencer_Total_Reads",
                         "Additional_Lines_needed",
                         "Final_coverage_sample")
-                                        #mutate("RawReadNr_deviation_linemean[%]"=(-1*(((median(Total_Reads)-Total_Reads)/median(Total_Reads))*100))) %>%
                                         
 path_out<-paste(outPath,"Pooling_Scheme.xlsx", sep="/")
 write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
