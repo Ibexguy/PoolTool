@@ -1,6 +1,19 @@
 #!/bin/bash
-#Masterfile for flagstat summary
+##############################################################################################
+#Master file to define all paths and variables for the repooling aproach
+##############################################################################################
+#Mapping to deduplication
     runID=allSamples
+
+      cores=6
+      #Path to raw data
+      fastqc_files=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/rawdata/NextSeq500_20210519_NS490_o24758_DataDelivery
+      # to conda!
+       bwa=/home/debian/bin/bwa/bwa
+      screening=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/$runID/Ibex
+
+
+#
     in_path=/net/cephfs/scratch/matrob/programs/Cluster_git/Cluster_Repo/Atlas-Pipelines/UpdateQulity/genolike
     out_path=~/scratch/programs/Cluster_git/Pooling_DeepSequencing/$runID/bam_statistics
     sample_file_path=/net/cephfs/scratch/matrob/programs/Cluster_git/Cluster_Repo/Atlas-Pipelines/UpdateQulity/genolike/sample_list.txt
