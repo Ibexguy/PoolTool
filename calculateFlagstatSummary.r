@@ -64,7 +64,7 @@ jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Tot
                                         mutate("Additional_Lines_needed"=number_lanes-(number_lanes*Sequencing_Overhead))%>%
                                         mutate("Final_coverage_sample"=(number_lanes*Sequencer_Total_Reads)/sum(Read_for_1Cov))%>%
                                         mutate("yl_Coverage_aim"=(Rawreads_for_CoverageAim)/(`Total_Reads[QC-passed+failed]`/ul_library_to_pool))%>%
-                                        mutate("Library_to_pool"= (yl_Coverage_aim /(mean(yl_Coverage_aim)*(nocl(yl_Coverage_aim)-1)*ul_library_to_pool)))
+                                        mutate("Library_to_pool"=(yl_Coverage_aim /(mean(yl_Coverage_aim)*(nocl(yl_Coverage_aim)-1)*ul_library_to_pool)))
 
 
 Pooling_Scheme<- jointData %>% select("Sample_name",
