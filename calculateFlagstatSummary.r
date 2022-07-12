@@ -13,7 +13,6 @@ coverage_final<-as.numeric(args[7])
 MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 
-
 #Generate output Table
     require(fuzzyjoin)
     require(tidyverse)
@@ -42,7 +41,8 @@ jointData<-regex_left_join(a,in_file[[3]],by=c("Sample"="Name"))
 HighQualityReads<-0.923 #Reads with Quality > 30
 factor<-10^6
 
-jointData<-jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
+jointData<-jointData %>% drop_na()
+summaryCalculations<-jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
                                         mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>%
                                         mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>%
                                         mutate("Total_Lines"=number_lanes) %>%
@@ -57,7 +57,7 @@ jointData<-jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Tota
                                         mutate("yl_Coverage_aim"=(Rawreads_for_CoverageAim)/(`Total_Reads[QC-passed+failed]`/ul_library_to_pool))%>%
                                         mutate("Library_to_pool"=yl_Coverage_aim/sum(yl_Coverage_aim)*(nrow(jointData)*ul_library_to_pool))
 
-masterTable<-jointData %>% select(Sample,
+masterTable<-summaryCalculations %>% select(Sample,
                                     `EndogDNA_MQ30[%]`,
                                     Mean_Read_Depth_MQ30, 
                                     Read_for_1Cov,
@@ -71,10 +71,10 @@ masterTable<-jointData %>% select(Sample,
                                     Final_coverage_sample,
                                     Library_to_pool)
 
-Pooling_Scheme<- jointData %>% select("Sample_name",
+Pooling_Scheme<- summaryCalculations %>% select("Sample_name",
                         "Library_to_pool")
 
-Line_optimisation<-jointData %>% select("Sample_name",
+Line_optimisation<-summaryCalculations %>% select("Sample_name",
                         "EndogDNA_MQ30[%]",
                         "Total_Lines",
                         "Coverage_aim",
@@ -88,7 +88,7 @@ Line_optimisation<-jointData %>% select("Sample_name",
 path_out<-paste(outPath,"Pooling_Scheme.xlsx", sep="/")
 write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
 
-path_out<-paste(outPath,"Line_optimisation.xlsx", sep="/")
+path_out<-paste(outPath,"Line_optimisation.csv", sep="/")
 write.xlsx(Line_optimisation,path_out,overwrite=TRUE)
 
 path_out<-paste(outPath,"flagstatSummary.xlsx", sep="/")
