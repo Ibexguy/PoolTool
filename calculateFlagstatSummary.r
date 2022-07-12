@@ -12,17 +12,7 @@ ul_library_to_pool<-as.numeric(args[6])
 coverage_final<-as.numeric(args[7])
 MaxOutputReads_Sequencer<-as.numeric(args[8])
 
-#for testing and debuging
-    runID<-"screening_run_4.21"
-    outPath<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics"
-    sample_file_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt"
-    #Variables for summary statistics
-    MappingQuality<-30
-    number_lanes<-2
-    ul_library_to_pool=5
-    coverage_final=6
-    MaxOutputReads_Sequencer=3361
-#
+
 
 #Generate output Table
     require(fuzzyjoin)
@@ -99,7 +89,7 @@ path_out<-paste(outPath,"Pooling_Scheme.xlsx", sep="/")
 write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
 
 path_out<-paste(outPath,"Line_optimisation.csv", sep="/")
-write.csv(Line_optimisation,path_out)
+write.xlsx(Line_optimisation,path_out,overwrite=TRUE)
 
 path_out<-paste(outPath,"flagstatSummary.xlsx", sep="/")
 write.xlsx(masterTable, path_out,overwrite=TRUE)
