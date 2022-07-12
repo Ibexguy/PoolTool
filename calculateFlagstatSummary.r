@@ -14,14 +14,14 @@ MaxOutputReads_Sequencer<-as.numeric(args[8])
 
 #for testing and debuging
     runID<-"screening_run_4.21"
-    out_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics"
+    outPath<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/bam_statistics"
     sample_file_path<-"/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/Ibex/work/samples.txt"
-    jointData<-read.xlsx('/Users/mathieu/Dropbox/Mac/Documents/flagstatSummary_poolPlanning_chap3_cg.xlsx')
-    Variables for summary statistics
+    #Variables for summary statistics
     MappingQuality<-30
     number_lanes<-2
     ul_library_to_pool=5
     coverage_final=6
+    MaxOutputReads_Sequencer=3361
 #
 
 #Generate output Table
@@ -52,11 +52,12 @@ jointData<-regex_left_join(a,in_file[[3]],by=c("Sample"="Name"))
 HighQualityReads<-0.923 #Reads with Quality > 30
 factor<-10^6
 
-jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
+jointData<-jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Total_Reads[QC-passed+failed]`)*100)) %>% 
                                         mutate("EndogDNA_MQ30[%]"=((Mapped_Reads_MQ30/`Total_Reads[QC-passed+failed]`)*100)) %>%
                                         mutate("Read_for_1Cov"=(`Total_Reads[QC-passed+failed]`/meandepth)) %>%
                                         mutate("Total_Lines"=number_lanes) %>%
                                         mutate("Coverage_aim"=coverage_final) %>%
+                                        mutate("Mean_Read_Depth_MQ30"=meandepth) %>%
                                         mutate("Coverage_per_Line"=coverage_final/number_lanes)%>%
                                         mutate("Rawreads_for_CoverageAim"=Coverage_per_Line*Read_for_1Cov) %>%
                                         mutate("Sequencer_Total_Reads"=MaxOutputReads_Sequencer*HighQualityReads*factor) %>%
@@ -64,15 +65,26 @@ jointData<- jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_Reads/`Tot
                                         mutate("Additional_Lines_needed"=number_lanes-(number_lanes*Sequencing_Overhead))%>%
                                         mutate("Final_coverage_sample"=(number_lanes*Sequencer_Total_Reads)/sum(Read_for_1Cov))%>%
                                         mutate("yl_Coverage_aim"=(Rawreads_for_CoverageAim)/(`Total_Reads[QC-passed+failed]`/ul_library_to_pool))%>%
-                                        mutate("Library_to_pool"=(yl_Coverage_aim /(mean(yl_Coverage_aim)*(nocl(yl_Coverage_aim)-1)*ul_library_to_pool)))
+                                        mutate("Library_to_pool"=yl_Coverage_aim/sum(yl_Coverage_aim)*(nrow(jointData)*ul_library_to_pool))
 
+masterTable<-jointData %>% select(Sample,
+                                    `EndogDNA_MQ30[%]`,
+                                    Mean_Read_Depth_MQ30, 
+                                    Read_for_1Cov,
+                                    Total_Lines,
+                                    Coverage_aim,
+                                    Coverage_per_Line,
+                                    Rawreads_for_CoverageAim,
+                                    Sequencer_Total_Reads,
+                                    Sequencing_Overhead,
+                                    Additional_Lines_needed,
+                                    Final_coverage_sample,
+                                    Library_to_pool)
 
 Pooling_Scheme<- jointData %>% select("Sample_name",
                         "Library_to_pool")
 
 Line_optimisation<-jointData %>% select("Sample_name",
-                        "EndogDNA[%]",
-                        "Input_Depth",
                         "EndogDNA_MQ30[%]",
                         "Total_Lines",
                         "Coverage_aim",
@@ -90,4 +102,4 @@ path_out<-paste(outPath,"Line_optimisation.csv", sep="/")
 write.csv(Line_optimisation,path_out)
 
 path_out<-paste(outPath,"flagstatSummary.xlsx", sep="/")
-write.xlsx(jointData, path_out,overwrite=TRUE)
+write.xlsx(masterTable, path_out,overwrite=TRUE)
