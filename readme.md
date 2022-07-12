@@ -1,4 +1,5 @@
-# Calculate amoutn of library for deep sequencing
+# PoolTool
+# Equlibrate libraries for deep sequencing
 The skripts in Pooling_Deepsequencing calculates flag statistics and from them the final ammount
 of library in ul to be added for eacht sample to the pool 
 
