@@ -1,29 +1,25 @@
 #!/bin/bash
 ##############################################################################################
-#Master file to define all paths and variables for the repooling aproach
+#Master file to define all paths and variables for the repooling approach
 ##############################################################################################
-#Mapping to deduplication
-    runID=allSamples
+    runID=allSamples #Folder with this ID will be generated
 
-      cores=6
-      #Path to raw data
-      fastqc_files=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/screening_run_4.21/rawdata/NextSeq500_20210519_NS490_o24758_DataDelivery
-      # to conda!
-       bwa=/home/debian/bin/bwa/bwa
-      screening=/ibex_genomics/raw_data/ancient_raw_data/screening_rawdata/$runID/Ibex
+    in_path=/path/to/deduplicated.bams #Path to parent folder containing the bams
 
+    out_path=/outPath/to/wirte/files$runID/bam_statistics # #Outhpath to write summary statistics
 
-#
-    in_path=/net/cephfs/scratch/matrob/programs/Cluster_git/Cluster_Repo/Atlas-Pipelines/UpdateQulity/genolike
-    out_path=~/scratch/programs/Cluster_git/Pooling_DeepSequencing/$runID/bam_statistics
-    sample_file_path=/net/cephfs/scratch/matrob/programs/Cluster_git/Cluster_Repo/Atlas-Pipelines/UpdateQulity/genolike/sample_list.txt
-    base_name=_recalibrated
-#Variables for summary statistics
-    MappingQuality=30
-    Chrom=1
-    REFGENOME=/home/cluster/matrob/data/programs/refgenome/Capra_hircus.ARS1.104.dna.toplevel.fa
+    sample_file_path=/data/dedup/sample_list.txt #SampleFile containing one bam file per line. Produce with ls /path/to/bams/*.bam > sample_list.txt
 
-#Variables for pooling scheme
+    base_name=_dedup # eg. if a file is called sample1_dedup.bam -> base_name=_dedup
+
+#Variables for summary statistics 
+    MappingQuality=30 #Mapping quality to calculate endogenous DNA content and summary statistics
+
+    Chrom=1 #Chromosome to base coverage information on, must have the same name as in the reference genome. 
+
+    REFGENOME=path/to/refgenome.fa #Path/to/reference.genome.fa
+
+#Variables for pooling scheme 
     #Number of lines which are use in the sequencing run
     number_lanes=2
 

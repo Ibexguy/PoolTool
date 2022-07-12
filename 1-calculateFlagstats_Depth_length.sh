@@ -8,16 +8,7 @@ helpFunction()
 {
    echo ""
    echo "Usage: bash $0 -m masterfile.sh"
-   printf "masterfile.sh need exactly! the following form: 
-      runID=screening_run_4.21
-      in_path=/path/to/bamfiles
-      out_path=/path/to/outpufiles
-      sample_file_path=path/to/samples.txt #textfile with one sample name per line
-      base_name=_dedup
-      MappingQuality=30
-      Chrom=23
-      REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna
-"
+   echo "Please provide all necessary varibles in the masterfile.sh"
    exit 1 # Exit script after printing help
 }
 
@@ -40,6 +31,7 @@ fi
 source $masterfile
 mkdir -p $out_path/flagstats
 mkdir -p $out_path/summary
+source activate PoolTool_v1 
 
 #Run Anylsis
 #Flagstats

@@ -1,0 +1,7 @@
+name: PoolTool_v1
+channels:
+    - conda-forge
+    - bioconda
+    - defaults
+dependencies:
+    - samtools

@@ -88,7 +88,7 @@ Line_optimisation<-summaryCalculations %>% select("Sample_name",
 path_out<-paste(outPath,"Pooling_Scheme.xlsx", sep="/")
 write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
 
-path_out<-paste(outPath,"Line_optimisation.csv", sep="/")
+path_out<-paste(outPath,"Line_optimisation.xlsx", sep="/")
 write.xlsx(Line_optimisation,path_out,overwrite=TRUE)
 
 path_out<-paste(outPath,"flagstatSummary.xlsx", sep="/")

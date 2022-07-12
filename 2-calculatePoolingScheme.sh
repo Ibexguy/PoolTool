@@ -11,18 +11,7 @@ helpFunction()
    printf "  -l = number of lanes [int]
             -c = aim coverage [int]
             -u = ul library per sample [int]"
-   printf "masterfile.sh need exactly! the following form: 
-        runID=screening_run_4.21
-        in_path=/path/to/bamfiles
-        out_path=/path/to/outpufiles
-        sample_file_path=path/to/samples.txt #textfile with one sample name per line
-        base_name=_dedup
-        MappingQuality=30
-        Chrom=23
-        REFGENOME=/ibex_genomics/raw_data/refgenom/GCF_001704415.1_ARS1_genomic.renamed.fna
-        MaxOutputReads_Sequencer=3360.99
-
-"
+   echo "Please provide all necessary varibles in the masterfile.sh"
    exit 1 # Exit script after printing help
 }
 
@@ -44,6 +33,7 @@ then
    helpFunction
 fi
 source $masterfile
+source activate PoolTool_v1 
 
 Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final $MaxOutputReads_Sequencer
 
