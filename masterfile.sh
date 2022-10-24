@@ -29,5 +29,8 @@
     #Final coverage to be achived over all runs
     coverage_final=6
      
-    #Number of reads, the sequencer can produce 
+    #Number of reads, the sequencer can produce per lines
     MaxOutputReads_Sequencer=3361 #In millions
+
+    #Persetnage of High quality reads with Base Quality >30
+    HighQualityReads=0.923

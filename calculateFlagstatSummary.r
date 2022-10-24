@@ -1,6 +1,4 @@
 #!/usr/bin/env Rscript
-#PCA generated with PCAngsd
-##Script plotting point PCA and lables PCA next to each other
 
 args <- commandArgs(trailingOnly = TRUE)
 runID <- args[1]
@@ -11,6 +9,7 @@ number_lanes<-as.numeric(args[5])
 ul_library_to_pool<-as.numeric(args[6])
 coverage_final<-as.numeric(args[7])
 MaxOutputReads_Sequencer<-as.numeric(args[8])
+HighQualityReads<-as.numeric(args[9])
 
 
 #Generate output Table
@@ -19,7 +18,7 @@ MaxOutputReads_Sequencer<-as.numeric(args[8])
     require(plyr)
     require(dplyr)
     require(tidyr)
-    require(openxlsx)
+    require(writexl)
 
 
 #Setting folders and paths 
@@ -38,7 +37,7 @@ jointData<-regex_left_join(a,in_file[[3]],by=c("Sample"="Name"))
 
 #Calculate mean of depth and ajust vollume for new pool 
 #number of lines per sample
-HighQualityReads<-0.923 #Reads with Quality > 30
+#Factor to multiply the number of million reads the sequencer is capable of produceing 
 factor<-10^6
 
 jointData<-jointData %>% drop_na()
@@ -56,6 +55,7 @@ summaryCalculations<-jointData %>% drop_na() %>% mutate("EndogDNA[%]"=((Mapped_R
                                         mutate("Final_coverage_sample"=(number_lanes*Sequencer_Total_Reads)/sum(Read_for_1Cov))%>%
                                         mutate("yl_Coverage_aim"=(Rawreads_for_CoverageAim)/(`Total_Reads[QC-passed+failed]`/ul_library_to_pool))%>%
                                         mutate("Library_to_pool"=yl_Coverage_aim/sum(yl_Coverage_aim)*(nrow(jointData)*ul_library_to_pool))
+
 
 masterTable<-summaryCalculations %>% select(Sample,
                                     `EndogDNA_MQ30[%]`,
@@ -85,11 +85,12 @@ Line_optimisation<-summaryCalculations %>% select("Sample_name",
                         "Additional_Lines_needed",
                         "Final_coverage_sample")
                                         
+
 path_out<-paste(outPath,"Pooling_Scheme.xlsx", sep="/")
-write.xlsx(Pooling_Scheme,path_out,overwrite=TRUE)
+write_xlsx(Pooling_Scheme,path_out)
 
 path_out<-paste(outPath,"Line_optimisation.xlsx", sep="/")
-write.xlsx(Line_optimisation,path_out,overwrite=TRUE)
+write_xlsx(Line_optimisation,path_out)
 
 path_out<-paste(outPath,"flagstatSummary.xlsx", sep="/")
-write.xlsx(masterTable, path_out,overwrite=TRUE)
+write_xlsx(masterTable, path_out)

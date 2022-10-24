@@ -35,6 +35,6 @@ fi
 source $masterfile
 source activate PoolTool_v1 
 
-Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final $MaxOutputReads_Sequencer
+Rscript --vanilla calculateFlagstatSummary.r $runID $out_path $sample_file_path $MappingQuality $number_lanes $ul_library_to_pool $coverage_final $MaxOutputReads_Sequencer $HighQualityReads
 
 cat $out_path/Line_optimisation.csv | head -n 2 | awk -F:"," '{printf $1}'

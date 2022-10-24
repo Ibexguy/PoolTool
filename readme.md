@@ -26,7 +26,7 @@ Also install the following packages in R:
     install.packages(plyr)
     install.packages(dplyr)
     install.packages(tidyr)
-    install.packages(openxlsx)
+    install.packages(writexl)
 
 ```
 ### Run the PoolTool 
